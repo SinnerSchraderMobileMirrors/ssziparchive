@@ -43,10 +43,17 @@ before_install:
   - if [ ${SDK} = "macosx" ]; then
         SCHEME="ObjectiveCExample_macOS";
         DESTINATION="platform=macosx";
-    else
-        # Grepping destination device udid
+    elif [ ${SDK} = "appletvsimulator" ]; then
+        `# Grepping destination device udid`
         DESTINATION_UDID=$(instruments -s devices | grep "$DESTINATION \[" | sed -E 's/.*\[([0-9A-F-]+)\].*/\1/g');
-        # Prelaunching simulator to avoid timeout https://github.com/travis-ci/travis-ci/issues/6422
+        `# Prelaunching simulator to avoid timeout https://github.com/travis-ci/travis-ci/issues/6422`
+        open -a "simulator" --args -CurrentDeviceUDID $DESTINATION_UDID;
+        SCHEME="ObjectiveCExample_tvOS";
+        DESTINATION="id=$DESTINATION_UDID";
+    else
+        `# Grepping destination device udid`
+        DESTINATION_UDID=$(instruments -s devices | grep "$DESTINATION \[" | sed -E 's/.*\[([0-9A-F-]+)\].*/\1/g');
+        `# Prelaunching simulator to avoid timeout https://github.com/travis-ci/travis-ci/issues/6422`
         open -a "simulator" --args -CurrentDeviceUDID $DESTINATION_UDID;
         SCHEME="ObjectiveCExample_iOS";
         DESTINATION="id=$DESTINATION_UDID";
